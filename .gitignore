@@ -1,0 +1,40 @@
+# ZeaZDev Omega .gitignore
+
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build Artifacts
+dist
+.expo
+.next
+build
+coverage
+
+# Env
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode
+.idea
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+
+# Unity
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/

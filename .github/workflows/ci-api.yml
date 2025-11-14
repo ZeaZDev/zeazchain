@@ -1,0 +1,49 @@
+# ZeaZDev CI/CD: Backend API
+name: CI - Backend API
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: [ "apps/api/**" ]
+  pull_request:
+    paths: [ "apps/api/**" ]
+
+jobs:
+  build-and-test:
+    name: Build, Test & Scan API
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+
+    - name: Install Dependencies
+      run: pnpm install
+
+    - name: Run Linter
+      run: pnpm --filter api lint
+
+    - name: Run Tests
+      run: pnpm --filter api test
+    
+    - name: Build Docker Image
+      run: docker build -t zeazchain-api:${{ github.sha }} -f apps/api/Dockerfile .
+      
+    - name: Scan Image with Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'zeazchain-api:${{ github.sha }}'
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH'

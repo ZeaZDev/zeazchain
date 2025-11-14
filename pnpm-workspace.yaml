@@ -1,0 +1,6 @@
+# ZeaZDev Omega Monorepo Configuration
+# Defines the workspaces for the zeazchain project.
+
+packages:
+  - 'apps/*'
+  - 'packages/*'

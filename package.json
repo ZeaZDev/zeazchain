@@ -1,0 +1,23 @@
+{
+  "name": "zeazchain-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ZeaZChain Omega-Tier FiGaTect Super-App",
+  "author": "ZeaZDev Meta-Intelligence",
+  "license": "Proprietary",
+  "scripts": {
+    "api:dev": "pnpm --filter api dev",
+    "miniapp:dev": "pnpm --filter miniapp dev",
+    "contracts:compile": "pnpm --filter contracts compile",
+    "contracts:test": "pnpm --filter contracts test",
+    "dev": "pnpm --parallel dev",
+    "build": "pnpm --filter \"./apps/*\" build",
+    "test": "pnpm --parallel test",
+    "lint": "pnpm --parallel lint"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.9",
+    "typescript": "^5.5.4"
+  },
+  "packageManager": "pnpm@9.6.0"
+}

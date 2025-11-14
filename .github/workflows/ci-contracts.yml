@@ -1,0 +1,42 @@
+# ZeaZDev CI/CD: Smart Contracts
+name: CI - Smart Contracts
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: [ "packages/contracts/**" ]
+  pull_request:
+    paths: [ "packages/contracts/**" ]
+
+jobs:
+  build-and-test:
+    name: Compile, Test & Audit Contracts
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+
+    - name: Install Dependencies
+      run: pnpm install
+
+    - name: Compile Contracts
+      run: pnpm --filter contracts compile
+    
+    - name: Run Contract Tests
+      run: pnpm --filter contracts test
+      
+    - name: Run Slither Security Audit
+      uses: crytic/slither-action@v0.4.0
+      with:
+        target: 'packages/contracts/'
+        fail-on: 'medium'
