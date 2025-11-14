@@ -99,3 +99,38 @@ instructions: |
   Commands Respond to: "@OmegaAgent review",'@OmegaAgent audit-contracts','@OmegaAgent summarize issue',"@OmegaAgent suggest-tests".
   Escalation: For any "critical" security issues, immediately notify the repository maintainers via GitHub Discussions and create a high-priority issue.
   Continuous Learning: Stay updated with the latest security vulnerabilities, best practices, and industry standards relevant to blockchain, DeFi, GameFi, and FinTech.
+
+  # ZeaZChain Copilot Instructions
+
+## Monorepo snapshot
+- `pnpm` workspace (`pnpm-workspace.yaml`) with `apps/*` and `packages/*`; root scripts chain workspace-specific cmds, so always run `pnpm install` and then `pnpm <target>` with `--filter` where needed.
+- `apps/api` (NestJS), `apps/miniapp` (Expo/React Native), `packages/contracts` (Hardhat Solidity), `packages/game-unity` (Unity WebGL). `README.md` contains the product overview and expectations.
+
+## Environment & services
+- Root `.env` powers `ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true })` in `apps/api/src/app.module.ts`; populate `POSTGRES_*`, `REDIS_*`, `WORLD_ID_APP_ID`, `WORLD_ID_ACTION`, etc.
+- Use `infra/docker-compose.yml` to start Postgres/Redis (`docker-compose -f infra/docker-compose.yml up -d`); defaults are `zeazdev/omega/zeazchain`.
+- Never commit secrets—`.github/copilot-agent.yml` already excludes `**/.env*`.
+
+## Backend (apps/api)
+- `main.ts` enables CORS, sets global prefix `api/v1`, and reads `PORT` from `ConfigService`; expose new endpoints beneath that prefix.
+- TypeORM is configured with `autoLoadEntities` and `synchronize: true` (development only). Add entities via feature modules so they auto-register.
+- `AuthModule` wires `WorldIDService` plus an `AuthController` placeholder; missing modules (`DefiModule`, `FintechModule`) still need to be created before referencing them.
+- `WorldIDService.verifyZKP` currently just logs and returns `true` when inputs exist—replace with actual World ID Cloud verification while preserving the ConfigService-driven app/action IDs.
+
+## MiniApp (apps/miniapp)
+- Expo entry at `app/index.tsx` renders branding and the `WorldIDButton` component from `components/WorldIDButton.tsx`.
+- `WorldIDButton` embeds `@worldcoin/idkit-react-native`’s `IDKitWidget`; for production feed real `signal`, `WORLD_ID_*` values via config (today they are hard-coded placeholders) and rely on `handleVerify` to toggle the loading state.
+- React Native styling is centralized inside each component—keep the dark theme + neon accent for consistency.
+
+## Smart contracts & blockchain
+- `packages/contracts/hardhat.config.ts` targets Solidity `0.8.20`; network secrets live in env vars (`INFURA_API_KEY`, `PRIVATE_KEY`, `ETHERSCAN_API_KEY`). Install Hardhat tooling locally before running `pnpm --filter contracts compile`.
+- `WorldIDVerifier.sol` is a stub that tracks used nullifiers; be mindful of the typo in `uint2Sint256` (needs cleanup) before deployment.
+- `ZeaToken.sol` inherits `ERC20` + `Ownable`; constructor mints 1B tokens to deployer and exposes `mint`. Favor OpenZeppelin patterns.
+
+## Game / Unity bridge
+- `packages/game-unity/Assets/Scripts/Web3Bridge.cs` calls into browser JS via `[DllImport("__Internal")]` and exposes `OnSignatureReceived`/`OnError` callbacks; integrate it with the NestJS API once signature verification endpoints exist.
+
+## Daily workflows
+- Install deps once (`pnpm install`), run backend with `pnpm api:dev`, miniapp with `pnpm miniapp:dev`, contracts tooling via `pnpm contracts:compile`/`contracts:test`. `pnpm dev` runs every workspace `dev` script in parallel—make sure each target defines one before enabling it.
+- Use `pnpm lint` / `pnpm --filter api lint` for ESLint, `pnpm --filter api test` for Jest, and add Hardhat or Expo tests as they come online.
+- Follow the repo’s “Docs-as-Code” expectation from `.github/copilot-agent.yml`: update `README.md` or feature docs whenever you change APIs, contracts, or workflows.

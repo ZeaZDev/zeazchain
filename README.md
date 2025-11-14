@@ -2,13 +2,11 @@
 # OMEGA-TIER PRODUCTION PROJECT (ZEAZDEV)
 
 **ZeaZChain** is an **OMEGA-TIER production-grade** Multi-Platform FiGaTect Super-App that seamlessly integrates:
-
 * **DeFi** (Decentralized Finance): Wallet, Swap, Stake, Trade
 * **GameFi** (Game Finance): Unity-powered games with crypto rewards
 * **FinTech** (Financial Technology): Real card issuance & Thai bank integration
 
 Built as a **MiniApp for World App**, ZeaZChain uses **World ID Zero-Knowledge Proof (ZKP)** as the foundational identity verification layer for all high-value functions.
-
 ## 🏗️ Architecture
 
 This is a `pnpm` monorepo containing the entire ZeaZChain ecosystem.

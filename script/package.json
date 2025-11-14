@@ -1,0 +1,5 @@
+"scripts": {
+  "mcp:install": "scripts/install-mcp.sh",
+  "mcp:dev": "pnpm --filter mcp-server dev",
+  "mcp:start": "pnpm --filter mcp-server start"
+}
