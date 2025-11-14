@@ -38,3 +38,5 @@ yarn-error.log*
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+
+.fake
