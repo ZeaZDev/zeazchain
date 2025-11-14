@@ -1,0 +1,6 @@
+services:
+  zeazchain:
+    image: zeazchain
+    build:
+      context: .
+      dockerfile: ./Dockerfile
