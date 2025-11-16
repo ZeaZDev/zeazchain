@@ -1,0 +1,153 @@
+diff --git a/script/install-mcp.sh b/script/install-mcp.sh
+index 10b8baa..1735eb0 100644
+--- a/script/install-mcp.sh
++++ b/script/install-mcp.sh
+@@ -1,35 +1,35 @@
+-#!/usr/bin/env bash
+-set -euo pipefail
+-
+-echo "[INFO] Starting MCP server installation for zeazchain..."
+-
+-# 1. System update
+-sudo apt update && sudo apt upgrade -y
+-
+-# 2. Core dependencies
+-sudo apt install -y git curl build-essential jq
+-
+-# 3. Node.js LTS (20.x)
+-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+-sudo apt install -y nodejs
+-
+-# 4. pnpm package manager
+-npm install -g pnpm
+-
+-# 5. Scaffold MCP server workspace
+-mkdir -p apps/mcp-server/src/{tools,rbac,logging,config} apps/mcp-server/logs
+-cd apps/mcp-server
+-
+-# 6. Initialize project
+-pnpm init -y
+-pnpm add @modelcontextprotocol/sdk winston dotenv zod
+-pnpm add -D typescript tsx eslint vitest
+-
+-# 7. Configure package.json
+-pnpm pkg set type="module"
+-pnpm pkg set scripts.dev="tsx watch src/index.ts"
+-pnpm pkg set scripts.build="tsc -p tsconfig.json"
+-pnpm pkg set scripts.start="node dist/index.js"
+-
+-echo "[INFO] MCP server scaffold complete."
+-echo "[INFO] Run 'pnpm mcp:install' from root to build MCP server."
++#!/usr/bin/env bash
++set -euo pipefail
++
++echo "[INFO] Starting MCP server installation for zeazchain..."
++
++# 1. System update
++sudo apt update && sudo apt upgrade -y
++
++# 2. Core dependencies
++sudo apt install -y git curl build-essential jq
++
++# 3. Node.js LTS (20.x)
++curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
++sudo apt install -y nodejs
++
++# 4. pnpm package manager
++npm install -g pnpm
++
++# 5. Scaffold MCP server workspace
++mkdir -p apps/mcp-server/src/{tools,rbac,logging,config} apps/mcp-server/logs
++cd apps/mcp-server
++
++# 6. Initialize project
++pnpm init -y
++pnpm add @modelcontextprotocol/sdk winston dotenv zod
++pnpm add -D typescript tsx eslint vitest
++
++# 7. Configure package.json
++pnpm pkg set type="module"
++pnpm pkg set scripts.dev="tsx watch src/index.ts"
++pnpm pkg set scripts.build="tsc -p tsconfig.json"
++pnpm pkg set scripts.start="node dist/index.js"
++
++echo "[INFO] MCP server scaffold complete."
++echo "[INFO] Run 'pnpm mcp:install' from root to build MCP server."
+diff --git a/script/package.json b/script/package.json
+index 743307c..038cb96 100644
+--- a/script/package.json
++++ b/script/package.json
+@@ -1,5 +1,5 @@
+-"scripts": {
+-  "mcp:install": "scripts/install-mcp.sh",
+-  "mcp:dev": "pnpm --filter mcp-server dev",
+-  "mcp:start": "pnpm --filter mcp-server start"
+-}
++"scripts": {
++  "mcp:install": "scripts/install-mcp.sh",
++  "mcp:dev": "pnpm --filter mcp-server dev",
++  "mcp:start": "pnpm --filter mcp-server start"
++}
+diff --git a/script/workflows/mcp-install.yml b/script/workflows/mcp-install.yml
+index 699894d..ac4d6a3 100644
+--- a/script/workflows/mcp-install.yml
++++ b/script/workflows/mcp-install.yml
+@@ -1,26 +1,26 @@
+-name: MCP One-Click Install
+-
+-on:
+-  workflow_dispatch:   # Trigger manually from GitHub Actions UI
+-
+-jobs:
+-  install-mcp:
+-    runs-on: ubuntu-latest
+-    steps:
+-      - name: Checkout repo
+-        uses: actions/checkout@v4
+-
+-      - name: Setup Node.js
+-        uses: actions/setup-node@v4
+-        with:
+-          node-version: 20
+-          cache: "pnpm"
+-
+-      - name: Install pnpm
+-        run: npm install -g pnpm
+-
+-      - name: Install dependencies
+-        run: pnpm install
+-
+-      - name: Build MCP server
+-        run: pnpm --filter mcp-server build
++name: MCP One-Click Install
++
++on:
++  workflow_dispatch:   # Trigger manually from GitHub Actions UI
++
++jobs:
++  install-mcp:
++    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout repo
++        uses: actions/checkout@v4
++
++      - name: Setup Node.js
++        uses: actions/setup-node@v4
++        with:
++          node-version: 20
++          cache: "pnpm"
++
++      - name: Install pnpm
++        run: npm install -g pnpm
++
++      - name: Install dependencies
++        run: pnpm install
++
++      - name: Build MCP server
++        run: pnpm --filter mcp-server build
+diff --git a/setup_dev_env.sh b/setup_dev_env.sh
+old mode 100644
+new mode 100755
+diff --git a/update.sh b/update.sh
+old mode 100644
+new mode 100755

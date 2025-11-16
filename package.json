@@ -13,7 +13,10 @@
     "dev": "pnpm --parallel dev",
     "build": "pnpm --filter \"./apps/*\" build",
     "test": "pnpm --parallel test",
-    "lint": "pnpm --parallel lint"
+    "lint": "pnpm --parallel lint",
+    "mcp:install": "script/install-mcp.sh",
+    "mcp:dev": "pnpm --filter mcp-server dev",
+    "mcp:start": "pnpm --filter mcp-server start"
   },
   "devDependencies": {
     "turbo": "^2.0.9",
